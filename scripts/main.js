@@ -96,9 +96,9 @@ id = 0;
 raffleStatus = [];
 window.onload = function () {
     displayShoeInfo();
-    displayRaffles();
+    displayFilterNav();
+    displayRaffles(this.raffles);
     getLocalStorageStatus();
-
 }
 
 function getShoe() {
@@ -141,11 +141,12 @@ function displayShoeInfo() {
     document.body.appendChild(container);
 }
 
-function displayRaffles() {
-    let raffles = this.getRaffles();
+function displayRaffles(raffles) {
+    //let raffles = this.getRaffles();
 
     let container = document.createElement('div');
     container.setAttribute('class', 'rafflesContainer');
+    container.setAttribute('id', 'rafflesContainer');
 
 
     Object.keys(raffles).forEach(raffleKey => {
@@ -221,7 +222,7 @@ function markAsEntered(id) {
         document.getElementById(id).innerHTML === 'Mark as entered' ? 'Entered' : 'Mark as entered'
     document.getElementById(`icon${id}`).className =
         document.getElementById(`icon${id}`).className === 'far fa-star' ? 'fas fa-star' : 'far fa-star';
-        this.updateLocalStorageStatus(id);
+    this.updateLocalStorageStatus(id);
 }
 
 function getLocalStorageStatus(id) {
@@ -233,8 +234,60 @@ function getLocalStorageStatus(id) {
 function updateLocalStorageStatus(id, loading = false) {
     if (localStorage.getItem(`raffle${id}`) && !loading) {
         let currentStatus = getLocalStorageStatus(id) === 'entered' ? 'not entered' : 'entered';
-        localStorage.setItem(`raffle${id}`, currentStatus);   
-    } else if(!localStorage.getItem(`raffle${id}`)) {
+        localStorage.setItem(`raffle${id}`, currentStatus);
+    } else if (!localStorage.getItem(`raffle${id}`)) {
         localStorage.setItem(`raffle${id}`, 'not entered');
+    }
+}
+
+function displayFilterNav() {
+    let nav = document.createElement('nav');
+    let ul = document.createElement('ul');
+
+    let collectFilter = document.createElement('li');
+    collectFilter.setAttribute('onclick', 'displayCollectRaffle()');
+    collectFilter.innerHTML = 'Collect;'
+
+    let fcfsFilter = document.createElement('li');
+    fcfsFilter.setAttribute('onclick', 'displayFcfsRaffle()');
+    fcfsFilter.innerHTML = 'FCFS';
+
+    let all = document.createElement('li');
+    all.setAttribute('onclick', 'displayAll()');
+    all.innerHTML = 'ALL';
+
+    ul.appendChild(collectFilter);
+    ul.appendChild(fcfsFilter);
+    ul.appendChild(all);
+    nav.appendChild(ul);
+    document.body.appendChild(nav);
+}
+
+function displayCollectRaffle() {
+    this.removeElementById('rafflesContainer');
+    this.displayRaffles(this.getCollectRaffle());
+}
+
+function displayFcfsRaffle() {
+    this.removeElementById('rafflesContainer');
+    this.displayRaffles(this.getFcfsRaffle());
+}
+
+function displayAll() {
+    this.removeElementById('rafflesContainer');
+    this.displayRaffles(this.getRaffles());
+}
+
+function getCollectRaffle() {
+    return Object.values(this.getRaffles()).filter(raffle => raffle.collection.includes('Collect'))
+}
+function getFcfsRaffle() {
+    return Object.values(this.getRaffles()).filter(raffle => raffle.purchase.includes('FCFS'))
+}
+
+function removeElementById(elementId) {
+    let element = document.getElementById(elementId);
+    if (element) {
+        element.parentNode.removeChild(element);
     }
 }
