@@ -75,7 +75,7 @@ var raffles = {
     },
 
     "Solebox": {
-        "logo": "https://www.soleretriever.com/wp-content/uploads/2018/04/SoleBox.jpg'git",
+        "logo": "https://www.soleretriever.com/wp-content/uploads/2018/04/SoleBox.jpg'",
         "country": "Germany",
         "purchase": "In-Store/Online",
         "collection": "Post and Collect",
@@ -95,10 +95,15 @@ var raffles = {
 
 window.onload = function () {
     displayShoeInfo();
+    displayRaffles();
 }
 
 function getShoe() {
     return this.shoe;
+}
+
+function getRaffles() {
+    return this.raffles;
 }
 
 function displayShoeInfo() {
@@ -129,6 +134,64 @@ function displayShoeInfo() {
 
     container.appendChild(img);
     container.appendChild(div);
-    
+
     document.body.appendChild(container);
+}
+
+function displayRaffles() {
+    let raffles = this.getRaffles();
+
+    let container = document.createElement('div');
+    container.setAttribute('class', 'rafflesContainer');
+
+    
+    Object.keys(raffles).forEach( raffleKey => {
+        let raffle = this.setRaffle(raffles[raffleKey]);
+        container.appendChild(raffle);
+        });
+    document.body.appendChild(container);    
+}
+
+function setRaffle(raffle) {
+    let raffleDiv = document.createElement('div');
+    raffleDiv.setAttribute('class', 'raffleDiv');
+
+    let raffleInfo = document.createElement('ul');
+    
+    let button = document.createElement('button');
+    button.innerHTML = setButtonInfo(raffle);
+    
+
+    Object.keys(raffle).forEach(key => {
+        if (key === 'logo') {
+            let img = document.createElement('img');
+            img.setAttribute('class', 'raffleImage');
+            img.src = raffle[key];
+            raffleDiv.appendChild(img);
+        }
+        else if (key === 'url') {
+            if(button.innerHTML === 'ENTER RAFFLE') {
+                button.setAttribute('class', 'greenButton');
+            }
+            if (button.innerHTML === 'CLOSED') {
+                button.setAttribute('class', 'redButton');
+            }
+        } else {
+            let raffleData = document.createElement('li');
+            raffleData.innerHTML = raffle[key];
+            raffleInfo.appendChild(raffleData);
+        }
+        console.log(key, raffle[key])
+    })
+    raffleDiv.appendChild(raffleInfo);
+    raffleDiv.appendChild(button);
+    return raffleDiv;
+}
+
+function setButtonInfo(raffle) {
+    if (raffle['Opens'] === 'live') {
+        return raffle['Closes'] === 'closed' ? 'CLOSED' : 'ENTER RAFFLE';
+    } else {
+        return 'ANNOUNCED';
+    }
 }

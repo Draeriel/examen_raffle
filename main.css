@@ -1,7 +1,22 @@
+body {
+    background-color: whitesmoke;
+}
 .mainProductImage {
     width: 400px;
 }
-
 .mainProductInfo {
     float: right;
+}
+.raffleDiv {
+    width: 200px;
+    background-color: white;
+}
+.raffleImage {
+    width: 200px;
+}
+.greenButton {
+    background-color: green;
+}
+.redButton {
+    background-color: red;
 }
