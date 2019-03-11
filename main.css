@@ -20,3 +20,6 @@ body {
 .redButton {
     background-color: red;
 }
+button:hover {
+    opacity: 0.8;
+}

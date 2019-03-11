@@ -158,6 +158,9 @@ function setRaffle(raffle) {
 
     let raffleInfo = document.createElement('ul');
     
+    let raffleAnchor = document.createElement('a');
+    raffleAnchor.href = raffle['url'];
+
     let button = document.createElement('button');
     button.innerHTML = setButtonInfo(raffle);
     
@@ -175,6 +178,7 @@ function setRaffle(raffle) {
             }
             if (button.innerHTML === 'CLOSED') {
                 button.setAttribute('class', 'redButton');
+                button.setAttribute('onclick', 'visitedPage()')
             }
         } else {
             let raffleData = document.createElement('li');
@@ -184,7 +188,8 @@ function setRaffle(raffle) {
         console.log(key, raffle[key])
     })
     raffleDiv.appendChild(raffleInfo);
-    raffleDiv.appendChild(button);
+    raffleAnchor.appendChild(button);
+    raffleDiv.appendChild(raffleAnchor);
     return raffleDiv;
 }
 
@@ -194,4 +199,8 @@ function setButtonInfo(raffle) {
     } else {
         return 'ANNOUNCED';
     }
+}
+
+function visitedPage() {
+    console.log($event);
 }
