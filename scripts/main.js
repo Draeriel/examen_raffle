@@ -198,6 +198,10 @@ function setRaffle(raffle) {
     icon.className = getLocalStorageStatus(id) === 'entered' ? 'fas fa-star' : 'far fa-star';
     icon.setAttribute('id', `icon${id}`);
 
+    if (raffle['winner']) {
+        let winner = document.createElement('strong');
+        winner.innerHTML = (raffle['winner'] === 'winner') ? 'W' : 'L';
+    }
     this.id++
 
     raffleDiv.appendChild(raffleInfo);
@@ -281,6 +285,7 @@ function displayAll() {
 function getCollectRaffle() {
     return Object.values(this.getRaffles()).filter(raffle => raffle.collection.includes('Collect'))
 }
+
 function getFcfsRaffle() {
     return Object.values(this.getRaffles()).filter(raffle => raffle.purchase.includes('FCFS'))
 }
