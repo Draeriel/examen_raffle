@@ -92,10 +92,13 @@ var raffles = {
 //    "raffles": raffles
 //};
 
-
+id = 0;
+raffleStatus = [];
 window.onload = function () {
     displayShoeInfo();
     displayRaffles();
+    getLocalStorageStatus();
+
 }
 
 function getShoe() {
@@ -144,12 +147,12 @@ function displayRaffles() {
     let container = document.createElement('div');
     container.setAttribute('class', 'rafflesContainer');
 
-    
-    Object.keys(raffles).forEach( raffleKey => {
+
+    Object.keys(raffles).forEach(raffleKey => {
         let raffle = this.setRaffle(raffles[raffleKey]);
         container.appendChild(raffle);
-        });
-    document.body.appendChild(container);    
+    });
+    document.body.appendChild(container);
 }
 
 function setRaffle(raffle) {
@@ -157,13 +160,12 @@ function setRaffle(raffle) {
     raffleDiv.setAttribute('class', 'raffleDiv');
 
     let raffleInfo = document.createElement('ul');
-    
+
     let raffleAnchor = document.createElement('a');
     raffleAnchor.href = raffle['url'];
 
     let button = document.createElement('button');
     button.innerHTML = setButtonInfo(raffle);
-    
 
     Object.keys(raffle).forEach(key => {
         if (key === 'logo') {
@@ -171,25 +173,38 @@ function setRaffle(raffle) {
             img.setAttribute('class', 'raffleImage');
             img.src = raffle[key];
             raffleDiv.appendChild(img);
-        }
-        else if (key === 'url') {
-            if(button.innerHTML === 'ENTER RAFFLE') {
+        } else if (key === 'url') {
+            if (button.innerHTML === 'ENTER RAFFLE') {
                 button.setAttribute('class', 'greenButton');
             }
             if (button.innerHTML === 'CLOSED') {
                 button.setAttribute('class', 'redButton');
-                button.setAttribute('onclick', 'visitedPage()')
             }
         } else {
             let raffleData = document.createElement('li');
             raffleData.innerHTML = raffle[key];
             raffleInfo.appendChild(raffleData);
         }
-        console.log(key, raffle[key])
     })
+
+    this.updateLocalStorageStatus(id, true);
+    let enterInfo = document.createElement('strong');
+    enterInfo.setAttribute('role', 'button');
+    enterInfo.setAttribute('onclick', `markAsEntered(${this.id})`);
+    enterInfo.innerHTML = getLocalStorageStatus(id) === 'entered' ? 'Entered' : 'Mark as entered';
+    enterInfo.setAttribute('id', id);
+    let icon = document.createElement('i');
+    icon.className = getLocalStorageStatus(id) === 'entered' ? 'fas fa-star' : 'far fa-star';
+    icon.setAttribute('id', `icon${id}`);
+
+    this.id++
+
     raffleDiv.appendChild(raffleInfo);
     raffleAnchor.appendChild(button);
     raffleDiv.appendChild(raffleAnchor);
+    raffleDiv.appendChild(enterInfo);
+    raffleDiv.appendChild(icon);
+
     return raffleDiv;
 }
 
@@ -201,6 +216,25 @@ function setButtonInfo(raffle) {
     }
 }
 
-function visitedPage() {
-    console.log($event);
+function markAsEntered(id) {
+    document.getElementById(id).innerHTML =
+        document.getElementById(id).innerHTML === 'Mark as entered' ? 'Entered' : 'Mark as entered'
+    document.getElementById(`icon${id}`).className =
+        document.getElementById(`icon${id}`).className === 'far fa-star' ? 'fas fa-star' : 'far fa-star';
+        this.updateLocalStorageStatus(id);
+}
+
+function getLocalStorageStatus(id) {
+    if (localStorage.getItem(`raffle${id}`)) {
+        return localStorage.getItem(`raffle${id}`);
+    }
+}
+
+function updateLocalStorageStatus(id, loading = false) {
+    if (localStorage.getItem(`raffle${id}`) && !loading) {
+        let currentStatus = getLocalStorageStatus(id) === 'entered' ? 'not entered' : 'entered';
+        localStorage.setItem(`raffle${id}`, currentStatus);   
+    } else if(!localStorage.getItem(`raffle${id}`)) {
+        localStorage.setItem(`raffle${id}`, 'not entered');
+    }
 }
