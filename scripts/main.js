@@ -250,19 +250,29 @@ function displayFilterNav() {
 
     let collectFilter = document.createElement('li');
     collectFilter.setAttribute('onclick', 'displayCollectRaffle()');
-    collectFilter.innerHTML = 'Collect;'
+    collectFilter.innerHTML = 'COLLECT;'
+
+    let raffleFilter = document.createElement('li');
+    raffleFilter.setAttribute('onclick', 'displayRaffleRaffle()');
+    raffleFilter.innerHTML = 'RAFFLE';
 
     let fcfsFilter = document.createElement('li');
     fcfsFilter.setAttribute('onclick', 'displayFcfsRaffle()');
     fcfsFilter.innerHTML = 'FCFS';
 
+    let inStoreFilter = document.createElement('li');
+    inStoreFilter.setAttribute('onclick', 'displayInStoreRaffle()');
+    inStoreFilter.innerHTML = 'IN STORE';
+    
     let all = document.createElement('li');
     all.setAttribute('onclick', 'displayAll()');
     all.innerHTML = 'ALL';
 
     ul.appendChild(collectFilter);
+    ul.appendChild(raffleFilter);
     ul.appendChild(fcfsFilter);
     ul.appendChild(all);
+    ul.appendChild(inStoreFilter);
     nav.appendChild(ul);
     document.body.appendChild(nav);
 }
@@ -277,6 +287,16 @@ function displayFcfsRaffle() {
     this.displayRaffles(this.getFcfsRaffle());
 }
 
+function displayInStoreRaffle() {
+    this.removeElementById('rafflesContainer');
+    this.displayRaffles(this.getInStoreRaffle());
+}
+
+function displayRaffleRaffle() {
+    this.removeElementById('rafflesContainer');
+    this.displayRaffles(this.getRaffleRaffle());
+}
+
 function displayAll() {
     this.removeElementById('rafflesContainer');
     this.displayRaffles(this.getRaffles());
@@ -288,6 +308,14 @@ function getCollectRaffle() {
 
 function getFcfsRaffle() {
     return Object.values(this.getRaffles()).filter(raffle => raffle.purchase.includes('FCFS'))
+}
+
+function getInStoreRaffle() {
+    return Object.values(this.getRaffles()).filter(raffle => raffle.purchase.includes('Store'))
+}
+
+function getRaffleRaffle() {
+    return Object.values(this.getRaffles()).filter(raffle => raffle.purchase.includes('Raffle'))
 }
 
 function removeElementById(elementId) {
